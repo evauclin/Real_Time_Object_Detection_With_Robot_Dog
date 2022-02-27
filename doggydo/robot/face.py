@@ -2,6 +2,8 @@ import os
 import sys
 import cv2
 import numpy as np
+
+
 class  Face:
     def __init__(self):
         self.recognizer = cv2.face.LBPHFaceRecognizer_create()
