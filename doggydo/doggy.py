@@ -31,6 +31,7 @@ class Doggy(object):
         # TODO: this must be multithreaded.
         if not self.ready():
             return False
+        print(f"Doggy will do: {action}")
         self._ready = False
         time.sleep(3)
         self._ready = True
