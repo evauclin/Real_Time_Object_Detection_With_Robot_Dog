@@ -42,9 +42,9 @@ class Doggy(object):
             warn("May be we can retrieve image while doggy is acting?")
             return None
 
-        ret, frame = self._cap.read()
+        ok, frame = self._cap.read()
 
-        if ret != 0:
-            raise RuntimeError(f"Could not read frame: exit code [{ret}]")
+        if not ok:
+            raise RuntimeError(f"Could not read frame")
 
         return np.array(frame)
