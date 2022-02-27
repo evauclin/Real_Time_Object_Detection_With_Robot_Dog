@@ -1,27 +1,26 @@
 #!/usr/bin/env python
 import time
 
-#from typing_extensions import Any, List, Optional
+import numpy as np
+
+from typing import List
 from doggydo import doggy
 from doggydo.doggy import DoggyOrder
 
 
-#def clamp_detections(detections: List[DoggyOrder], count: int = 5) -> List[DoggyOrder]:
-def clamp_detections(detections, limit: int = 5):
+def clamp_detections(detections: List[DoggyOrder], limit: int = 5) -> List[DoggyOrder]:
     """Clamp the number of detections to not exceed limit"""
     while len(detections) > limit:
         detections = detections.pop(0)
     return detections
 
 
-#def get_order_given(last_detections: List[DoggyOrder]) -> DoggyOrder:
-def get_order_given(last_detections):
+def get_order_given(last_detections: List[DoggyOrder]) -> DoggyOrder:
     """Returns the order to give as regard of all the detections given"""
     return DoggyOrder.NONE
 
 
-#def get_new_detection(frame: np.ndarray) -> DoggyOrder:
-def get_new_detection(frame):
+def get_new_detection(frame: np.ndarray) -> DoggyOrder:
     """Run the prediction and return the Detection observed"""
     return DoggyOrder.NONE
 
