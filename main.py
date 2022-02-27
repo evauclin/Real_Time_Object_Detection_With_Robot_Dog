@@ -35,6 +35,8 @@ def main():
 
     if not doggy.start():
         raise RuntimeError("Doggy did not start!")
+    else:
+        print("Doggy started.")
 
     # Main event loop
     while True:
@@ -53,10 +55,5 @@ def main():
             time.sleep(1)
 
 
-def debug():
-    print("Hello")
-
-
 if __name__ == "__main__":
     main()
-    #debug()
