@@ -6,21 +6,24 @@ from doggydo import doggy
 from doggydo.doggy import DoggyOrder
 
 
-#def clamp_detections(detections: List[Any], count: int = 5) -> List[Any]:
-def clamp_detections(detections, count: int = 5):
-    while len(detections) > count:
+#def clamp_detections(detections: List[DoggyOrder], count: int = 5) -> List[DoggyOrder]:
+def clamp_detections(detections, limit: int = 5):
+    """Clamp the number of detections to not exceed limit"""
+    while len(detections) > limit:
         detections = detections.pop(0)
     return detections
 
 
-#def get_order_given(last_detections: List[Any]) -> Optional[DoggyOrder]:
+#def get_order_given(last_detections: List[DoggyOrder]) -> DoggyOrder:
 def get_order_given(last_detections):
-    return None
+    """Returns the order to give as regard of all the detections given"""
+    return DoggyOrder.NONE
 
 
-#def get_new_detection() -> Any:
-def get_new_detection():
-    return None
+#def get_new_detection(frame: np.ndarray) -> DoggyOrder:
+def get_new_detection(frame):
+    """Run the prediction and return the Detection observed"""
+    return DoggyOrder.NONE
 
 
 def main():
@@ -30,17 +33,19 @@ def main():
         raise RuntimeError("Doggy did not start!")
 
     while True:
-        if doggy.ready():
-            new_detection = get_new_detection()
-            if new_detection is not None:
-                last_detections.append(new_detection)
+        frame = doggy.get_camera_frame()
+        if frame is not None:
+            new_detection = get_new_detection(frame)
+            last_detections.append(new_detection)
             last_detections = clamp_detections(last_detections)
             current_order = get_order_given(last_detections)
 
-            if current_order is not None:
+            if current_order != DoggyOrder.NONE and doggy.ready():
                 doggy.do(current_order)
+                last_detections = []
         else:
-            time.sleep(0.5)
+            print("I'll sleep to wait a little.")
+            time.sleep(1)
 
 
 if __name__ == "__main__":
