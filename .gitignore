@@ -1,7 +1,9 @@
-/tfod
+Tensorflow/workspace/annotations
 Tensorflow/workspace/images
 /.ipynb_checkpoints
 /ipynb_checkpoints
 .ipynb_checkpoints
 
 **/__pycache__/*
+
+
