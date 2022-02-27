@@ -11,7 +11,7 @@ from doggydo.doggy import DoggyOrder
 def clamp_detections(detections: List[DoggyOrder], limit: int = 5) -> List[DoggyOrder]:
     """Clamp the number of detections to not exceed limit"""
     while len(detections) > limit:
-        detections = detections.pop(0)
+        detections.pop(0)
     return detections
 
 
