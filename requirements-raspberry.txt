@@ -1,0 +1,5 @@
+mpu6050-raspberrypi==1.2
+numpy==1.19.3
+opencv-python==4.5.5.62
+opencv-python-headless==4.5.5.62
+opencv-contrib-python==4.5.5.62
