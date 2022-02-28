@@ -91,6 +91,7 @@ class Control:
             self.calibration_angle[i][0]=self.calibration_angle[i][0]-self.angle[i][0]
             self.calibration_angle[i][1]=self.calibration_angle[i][1]-self.angle[i][1]
             self.calibration_angle[i][2]=self.calibration_angle[i][2]-self.angle[i][2]
+
     def run(self):
         if self.checkPoint():
             try:
