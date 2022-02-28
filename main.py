@@ -48,8 +48,8 @@ def main():
             current_order = get_order_given(last_detections)
 
             if current_order != DoggyOrder.NONE and doggy.ready():
-                doggy.do(current_order)
                 last_detections = []
+                doggy.do(current_order)
         else:
             print("I'll sleep to wait a little.")
             time.sleep(1)
