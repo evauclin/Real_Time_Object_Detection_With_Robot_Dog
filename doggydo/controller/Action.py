@@ -1,11 +1,14 @@
 import math
 from .Control import *
 from .Servo import *
+
+
 class Action:
     def __init__(self):
         self.servo=Servo()
         self.control=Control()
         self.servo.setServoAngle(15,90)
+
     def push_ups(self):
         xyz=[[0,50,0],[-100,23,0],[-100,23,0],[0,50,0]]
         for i in range(4):
@@ -42,6 +45,7 @@ class Action:
                 self.control.point[i][2]+=xyz[i][2]
             self.control.run()
             time.sleep(0.01)
+
     def helloOne(self):
         xyz=[[-20,120,-40],[50,105,0],[50,105,0],[0,120,0]]
         for i in range(4):
@@ -95,6 +99,7 @@ class Action:
         for i in range(50,110):
             self.servo.setServoAngle(15,i)
             time.sleep(0.02)
+
     def helloTwo(self):
         xyz=[[0,99,-30],[10,99,0],[10,99,0],[0,99,0]]
         for i in range(4):
@@ -131,6 +136,7 @@ class Action:
         self.control.stop()
         for i in range(10):
             self.control.setpLeft()
+
     def hand(self):
         xyz=[[-20,120,-20],[50,105,0],[50,105,0],[-20,120,20]]
         for i in range(4):
@@ -363,6 +369,81 @@ class Action:
             self.control.run()
             time.sleep(0.02)
         time.sleep(1)
+
+    def lay_in(self):
+        xyz=[[55,78,0],[55,78,0],[55,78,0],[55,78,0]]
+        for i in range(4):
+            xyz[i][0]=(xyz[i][0]-self.control.point[i][0])/30
+            xyz[i][1]=(xyz[i][1]-self.control.point[i][1])/30
+            xyz[i][2]=(xyz[i][2]-self.control.point[i][2])/30
+        for j in range(30):
+            for i in range(4):
+                self.control.point[i][0]+=xyz[i][0]
+                self.control.point[i][1]+=xyz[i][1]
+                self.control.point[i][2]+=xyz[i][2]
+            self.control.run()
+            time.sleep(0.02)
+
+        y=100*math.cos(45/180*math.pi)+23
+        x=100*math.sin(45/180*math.pi)
+        xyz=[[-x,y,0],[0,0,123],[0,0,-123],[-x,y,0]]
+        for i in range(4):
+            xyz[i][0]=(xyz[i][0]-self.control.point[i][0])/30
+            xyz[i][1]=(xyz[i][1]-self.control.point[i][1])/30
+            xyz[i][2]=(xyz[i][2]-self.control.point[i][2])/30
+        for j in range(30):
+            for i in range(4):
+                self.control.point[i][0]+=xyz[i][0]
+                self.control.point[i][1]+=xyz[i][1]
+                self.control.point[i][2]+=xyz[i][2]
+            self.control.run()
+            time.sleep(0.02)
+
+
+        for i in range(45,-45,-1):
+            y=100*math.cos(i/180*math.pi)+23
+            x=100*math.sin(i/180*math.pi)
+            xyz=[[-x,y,0],[0,0,123],[0,0,-123],[-x,y,0]]
+            for i in range(4):
+                xyz[i][0]=(xyz[i][0]-self.control.point[i][0])
+                xyz[i][1]=(xyz[i][1]-self.control.point[i][1])
+                xyz[i][2]=(xyz[i][2]-self.control.point[i][2])
+            for i in range(4):
+                self.control.point[i][0]+=xyz[i][0]
+                self.control.point[i][1]+=xyz[i][1]
+                self.control.point[i][2]+=xyz[i][2]
+            self.control.run()
+
+    def lay_out(self):
+        for i in range(-45,45,1):
+            y=100*math.cos(i/180*math.pi)+23
+            x=100*math.sin(i/180*math.pi)
+            xyz=xyz=[[-x,y,0],[0,0,123],[0,0,-123],[-x,y,0]]
+            for i in range(4):
+                xyz[i][0]=(xyz[i][0]-self.control.point[i][0])
+                xyz[i][1]=(xyz[i][1]-self.control.point[i][1])
+                xyz[i][2]=(xyz[i][2]-self.control.point[i][2])
+            for i in range(4):
+                self.control.point[i][0]+=xyz[i][0]
+                self.control.point[i][1]+=xyz[i][1]
+                self.control.point[i][2]+=xyz[i][2]
+            self.control.run()
+
+
+        xyz=[[55,78,0],[55,78,0],[55,78,0],[55,78,0]]
+        for i in range(4):
+            xyz[i][0]=(xyz[i][0]-self.control.point[i][0])/30
+            xyz[i][1]=(xyz[i][1]-self.control.point[i][1])/30
+            xyz[i][2]=(xyz[i][2]-self.control.point[i][2])/30
+        for j in range(30):
+            for i in range(4):
+                self.control.point[i][0]+=xyz[i][0]
+                self.control.point[i][1]+=xyz[i][1]
+                self.control.point[i][2]+=xyz[i][2]
+            self.control.run()
+            time.sleep(0.02)
+        time.sleep(1)
+
 
 
 if __name__=='__main__':

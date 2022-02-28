@@ -34,7 +34,7 @@ class PiCamera(object):
         pass
 
     def is_opened(self):
-        return False
+        return True
 
     def get_frame(self):
         return False, None
@@ -83,7 +83,9 @@ class Doggy(object):
         elif order == DoggyOrder.SIT:
             print("SIT")
         elif order == DoggyOrder.LIE:
-            print("LIE")
+            self.controller.lay_in()
+            time.sleep(2)
+            self.controller.lay_out()
         elif order == DoggyOrder.NONE:
             print("NONE")
         else:
