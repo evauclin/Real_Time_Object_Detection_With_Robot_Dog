@@ -2,6 +2,7 @@ import io
 from distutils.log import warn
 from enum import IntEnum
 import subprocess
+from PIL import Image
 
 import numpy as np
 import time
@@ -65,8 +66,9 @@ class PiCamera(object):
         stream.seek(0)
         stream.truncate()
         if self.is_valid_image_4_bytes(jpg):
-            frame = np.frombuffer(jpg, dtype=np.uint8)
-        return True, None
+            img = Image.open(io.BytesIO(jpg))
+            return True, np.array(img)
+        return False, None
 
 
 class Doggy(object):
