@@ -76,7 +76,7 @@ def main():
         for _ in camera.capture_continuous(stream, 'jpeg', use_video_port = True):
             frame = doggy.get_camera_frame(stream)
             if frame is not None:
-                new_detection = get_new_detection_tflite(interpreter,frame,0.7)
+                new_detection = get_new_detection_tflite(detection_model, frame, 0.7)
                 last_detections.append(new_detection)
                 last_detections = clamp_detections(last_detections, limit=5)
                 current_order = get_order_given(last_detections)
