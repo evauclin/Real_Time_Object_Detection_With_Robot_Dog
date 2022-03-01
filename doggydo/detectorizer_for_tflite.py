@@ -1,5 +1,4 @@
 import re
-import cv2
 import time
 from tflite_runtime.interpreter import Interpreter
 import numpy as np
@@ -57,28 +56,28 @@ def detect_objects(interpreter, image, threshold):
     max_label = unique_labels[max_count_idx]
     return max_label
 
+# import cv2
+# def main():
+#     labels = load_labels()
+#     interpreter = Interpreter('detect.tflite')
+#     interpreter.allocate_tensors()
+#     _, input_height, input_width, _ = interpreter.get_input_details()[0]['shape']
 
-def main():
-    labels = load_labels()
-    interpreter = Interpreter('detect.tflite')
-    interpreter.allocate_tensors()
-    _, input_height, input_width, _ = interpreter.get_input_details()[0]['shape']
+#     cap = cv2.VideoCapture(0)
+#     while cap.isOpened():
+#         ret, frame = cap.read()
+#         img = cv2.resize(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), (320,320))
+#         res = detect_objects(interpreter, img, 0.8)
+#         print(res)
 
-    cap = cv2.VideoCapture(0)
-    while cap.isOpened():
-        ret, frame = cap.read()
-        img = cv2.resize(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), (320,320))
-        res = detect_objects(interpreter, img, 0.8)
-        print(res)
+#         for result in res:
+#             labels[int(result['class_id'])]
 
-        for result in res:
-            labels[int(result['class_id'])]
+#         cv2.imshow('Pi Feed', frame)
 
-        cv2.imshow('Pi Feed', frame)
-
-        if cv2.waitKey(10) & 0xFF ==ord('q'):
-            cap.release()
-            cv2.destroyAllWindows()
+#         if cv2.waitKey(10) & 0xFF ==ord('q'):
+#             cap.release()
+#             cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()

@@ -1,19 +1,10 @@
 #!/usr/bin/env python
-import sys
 import time
-
-from pathlib import Path
-import numpy as np
-import os
-from Tensorflow.models.research.object_detection.utils import config_util
-from Tensorflow.models.research.object_detection.builders import model_builder
-import tensorflow as tf
 from tflite_runtime.interpreter import Interpreter
 
 from typing import Any, List, Optional
 from doggydo import doggy
 from doggydo.doggy import DoggyOrder
-from doggydo import detectorizer_without_tflite
 from doggydo import detectorizer_for_tflite
 
 
@@ -81,7 +72,7 @@ def main():
     while True:
         frame = doggy.get_camera_frame()
         if frame is not None:
-            new_detection = get_new_detection_tflite(interpreter,frame,0.7)
+            # new_detection = get_new_detection_tflite(interpreter,frame,0.7)
             # new_detection = get_new_detection(frame, detection_model)
             last_detections.append(new_detection)
             last_detections = clamp_detections(last_detections, limit=5)

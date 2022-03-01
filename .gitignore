@@ -4,6 +4,8 @@ Tensorflow/workspace/images
 /ipynb_checkpoints
 .ipynb_checkpoints
 
+Tensorflow/protoc/**
+
 **/__pycache__/*
 
 
