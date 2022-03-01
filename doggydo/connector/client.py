@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+import cv2
 import io
 import socket
 import struct
 from .pid import *
-from .face import *
+from .face import Face
 import numpy as np
-from .thread import *
+#from .thread import *
 from PIL import Image
 from .command import COMMAND as cmd
 

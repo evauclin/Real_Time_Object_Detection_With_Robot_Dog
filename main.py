@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 import time
 
 from pathlib import Path
@@ -71,6 +72,8 @@ def main():
 
     if not doggy.start():
         raise RuntimeError("Doggy did not start!")
+    else:
+        print("Doggy started.")
 
     new_detection = DoggyOrder.NONE
 
@@ -86,8 +89,8 @@ def main():
             print(new_detection)
 
             if current_order != DoggyOrder.NONE and doggy.ready():
-                doggy.do(current_order)
                 last_detections = []
+                doggy.do(current_order)
         else:
             print("I'll sleep to wait a little.")
             time.sleep(1)
