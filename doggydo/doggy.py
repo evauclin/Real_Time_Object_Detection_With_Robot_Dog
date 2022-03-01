@@ -1,3 +1,4 @@
+import io
 from distutils.log import warn
 from enum import IntEnum
 import subprocess
@@ -20,10 +21,13 @@ class CV2Camera(object):
         import cv2
         self._cap = cv2.VideoCapture(0)
 
+    def setup(self):
+        pass
+
     def is_opened(self):
         return self._cap.isOpened()
 
-    def get_frame(self):
+    def get_frame(self, stream: io.BytesIO = None):
         if self.is_opened():
             ret, frame = self._cap.read()
             return ret, np.array(frame) if ret else frame
@@ -31,13 +35,38 @@ class CV2Camera(object):
 
 class PiCamera(object):
     def __init__(self):
-        pass
+        import picamera
+        self.camera = picamera.PiCamera()
+
+    def setup(self):
+        self.camera.resolution = (400,300)       # pi camera resolution
+        self.camera.framerate = 15               # 15 frames/sec
+        self.camera.saturation = 80              # Set image video saturation
+        self.camera.brightness = 50              # Set the brightness of the image (50 indicates the state of white balance)
 
     def is_opened(self):
         return True
 
-    def get_frame(self):
-        return False, None
+    def is_valid_image_4_bytes(self,buf):
+        bValid = True
+        if buf[6:10] in (b'JFIF', b'Exif'):
+            if not buf.rstrip(b'\0\r\n').endswith(b'\xff\xd9'):
+                bValid = False
+        else:
+            try:
+                Image.open(io.BytesIO(buf)).verify()
+            except:
+                bValid = False
+        return bValid
+
+    def get_frame(self, stream: io.BytesIO):
+        stream.seek(0)
+        jpg = stream.read()
+        stream.seek(0)
+        stream.truncate()
+        if self.is_valid_image_4_bytes(jpg):
+            frame = np.frombuffer(jpg, dtype=np.uint8)
+        return True, None
 
 
 class Doggy(object):
@@ -94,12 +123,12 @@ class Doggy(object):
         self._ready = True
         return True
 
-    def get_camera_frame(self) -> np.ndarray:
+    def get_camera_frame(self, stream: io.BytesIO = None) -> np.ndarray:
         if not self.ready():
             warn("May be we can retrieve image while doggy is acting?")
             return None
 
-        ok, frame = self.video.get_frame()
+        ok, frame = self.video.get_frame(stream)
 
         if not ok:
             raise RuntimeError(f"Could not read frame")

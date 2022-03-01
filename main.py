@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import io
 import time
 from tflite_runtime.interpreter import Interpreter
 
@@ -69,22 +70,24 @@ def main():
     new_detection = DoggyOrder.NONE
 
     # Main event loop
-    while True:
-        frame = doggy.get_camera_frame()
-        if frame is not None:
-            # new_detection = get_new_detection_tflite(interpreter,frame,0.7)
-            # new_detection = get_new_detection(frame, detection_model)
-            last_detections.append(new_detection)
-            last_detections = clamp_detections(last_detections, limit=5)
-            current_order = get_order_given(last_detections)
-            print(new_detection)
+    with doggy.video.camera as camera:
+        doggy.video.setup()
+        stream = io.BytesIO()
+        for _ in camera.capture_continuous(stream, 'jpeg', use_video_port = True):
+            frame = doggy.get_camera_frame(stream)
+            if frame is not None:
+                new_detection = get_new_detection_tflite(interpreter,frame,0.7)
+                last_detections.append(new_detection)
+                last_detections = clamp_detections(last_detections, limit=5)
+                current_order = get_order_given(last_detections)
+                print(new_detection)
 
-            if current_order != DoggyOrder.NONE and doggy.ready():
-                last_detections = []
-                doggy.do(current_order)
-        else:
-            print("I'll sleep to wait a little.")
-            time.sleep(1)
+                if current_order != DoggyOrder.NONE and doggy.ready():
+                    last_detections = []
+                    doggy.do(current_order)
+            else:
+                print("I'll sleep to wait a little.")
+                time.sleep(1)
 
 
 if __name__ == "__main__":
