@@ -27,29 +27,15 @@ def get_order_given(last_detections: List[DoggyOrder]) -> DoggyOrder:
 def get_new_detection_tflite(interpreter,frame,threshold):
     order = detectorizer_for_tflite.detect_objects(interpreter,frame,0.7)
     if order is not None:
-        if order == '0':
+        if order == 0:
             return DoggyOrder.LIE
-        elif order == '1':
+        elif order == 1:
             return DoggyOrder.STAND
-        elif order == '2':
+        elif order == 2:
             return DoggyOrder.SIT
         else:
             raise RuntimeError('Error with orders')
     return DoggyOrder.NONE
-
-
-# def get_new_detection(frame: np.ndarray, model: Optional[Any]) -> DoggyOrder:
-#     order = detectorizer_without_tflite.model_in_action(frame)
-#     if order is not None:
-#         if order == 'C':
-#             return DoggyOrder.LIE
-#         elif order == 'V':
-#             return DoggyOrder.STAND
-#         elif order == 'Y':
-#             return DoggyOrder.SIT
-#         else:
-#             raise RuntimeError('Error with orders')
-#     return DoggyOrder.NONE
 
 
 def main():
@@ -59,7 +45,6 @@ def main():
 
     detection_model = Interpreter("detect_from_visio_dog.tflite")
     detection_model.allocate_tensors()
-
     # _, input_height, input_width, _ = detection_model.get_input_details()[0]['shape']
 
     if not doggy.start():

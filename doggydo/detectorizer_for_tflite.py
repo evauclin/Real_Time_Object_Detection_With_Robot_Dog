@@ -1,3 +1,4 @@
+from typing import Optional
 import re
 import time
 from tflite_runtime.interpreter import Interpreter
@@ -33,51 +34,31 @@ def get_output_tensor(interpreter, index):
   return tensor
 
 
-def detect_objects(interpreter, image, threshold):
+def detect_objects(interpreter, image, threshold) -> Optional[int]:
     """Returns a list of detection results, each a dictionary of object info."""
-    labels = load_labels()
     set_input_tensor(interpreter, image)
     interpreter.invoke()
     # Get all output details
-    boxes = get_output_tensor(interpreter, 0)
-    classes = get_output_tensor(interpreter, 1)
-    scores = get_output_tensor(interpreter, 2)
-    count = int(get_output_tensor(interpreter, 3))
+    boxes = get_output_tensor(interpreter, 1)
+    classes = get_output_tensor(interpreter, 3).astype(np.int)
+    scores = get_output_tensor(interpreter, 0)
+    count = int(get_output_tensor(interpreter, 2))
 
-    results = []
+    detections = []
     for i in range(count):
         if scores[i] >= threshold:
            detections.append(classes[i])
 
     detections = np.array(detections)
 
+    if not detections:
+        return None
+
     unique_labels, counts = np.unique(detections, return_counts=True)
     max_count_idx = np.argmax(counts)
     max_label = unique_labels[max_count_idx]
     return max_label
 
-# import cv2
-# def main():
-#     labels = load_labels()
-#     interpreter = Interpreter('detect.tflite')
-#     interpreter.allocate_tensors()
-#     _, input_height, input_width, _ = interpreter.get_input_details()[0]['shape']
-
-#     cap = cv2.VideoCapture(0)
-#     while cap.isOpened():
-#         ret, frame = cap.read()
-#         img = cv2.resize(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB), (320,320))
-#         res = detect_objects(interpreter, img, 0.8)
-#         print(res)
-
-#         for result in res:
-#             labels[int(result['class_id'])]
-
-#         cv2.imshow('Pi Feed', frame)
-
-#         if cv2.waitKey(10) & 0xFF ==ord('q'):
-#             cap.release()
-#             cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
