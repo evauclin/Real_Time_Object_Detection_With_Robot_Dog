@@ -35,32 +35,27 @@ def get_output_tensor(interpreter, index):
 
 
 def detect_objects(interpreter, image, threshold):
-  """Returns a list of detection results, each a dictionary of object info."""
-  labels = load_labels()
-  set_input_tensor(interpreter, image)
-  interpreter.invoke()
-  # Get all output details
-  boxes = get_output_tensor(interpreter, 0)
-  classes = get_output_tensor(interpreter, 1)
-  scores = get_output_tensor(interpreter, 2)
-  count = int(get_output_tensor(interpreter, 3))
+    """Returns a list of detection results, each a dictionary of object info."""
+    labels = load_labels()
+    set_input_tensor(interpreter, image)
+    interpreter.invoke()
+    # Get all output details
+    boxes = get_output_tensor(interpreter, 0)
+    classes = get_output_tensor(interpreter, 1)
+    scores = get_output_tensor(interpreter, 2)
+    count = int(get_output_tensor(interpreter, 3))
 
-  results = []
-  for i in range(count):
-    if scores[i] >= threshold:
-      result = {
-          'bounding_box': boxes[i],
-          'class_id': classes[i],
-          'score': scores[i]
-      }
-      results.append(result)
+    results = []
+    for i in range(count):
+        if scores[i] >= threshold:
+           detections.append(classes[i])
 
-  for result in result:
-            labels[int(result['class_id'])]
-  return results
+    detections = np.array(detections)
 
-
-
+    unique_labels, counts = np.unique(detections, return_counts=True)
+    max_count_idx = np.argmax(counts)
+    max_label = unique_labels[max_count_idx]
+    return max_label
 
 
 def main():
@@ -88,4 +83,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-            
