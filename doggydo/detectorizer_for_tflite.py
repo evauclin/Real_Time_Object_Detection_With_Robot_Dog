@@ -36,6 +36,7 @@ def get_output_tensor(interpreter, index):
 
 def detect_objects(interpreter, image, threshold):
   """Returns a list of detection results, each a dictionary of object info."""
+  labels = load_labels()
   set_input_tensor(interpreter, image)
   interpreter.invoke()
   # Get all output details
@@ -53,35 +54,12 @@ def detect_objects(interpreter, image, threshold):
           'score': scores[i]
       }
       results.append(result)
+
+  for result in result:
+            labels[int(result['class_id'])]
   return results
 
 
-
-
-
-def classe_detector(detections): #classe detected if detection score > 0.7 during 3 secondes and the propotion of the label is > 0.8 in liste
-    t0,liste = 0, []
-    
-    
-    for i in range(len(detections['detection_classes'])):
-
-        if time.time()-t0 >3:
-            extract_dict = Counter(liste)
-            for k, v in extract_dict.items():
-                if v/len(liste)>=0.8:
-                    if k == 0:
-                        print('C')
-                    elif k == 1:
-                        print('V')
-                    elif k == 2:
-                        print('W') 
-
-            t0=time.time()
-            liste = []
-
-        if detections['detection_scores'][i]>0.7:
-            pre_classe=detections['detection_classes'][i]
-            liste.append(pre_classe)
 
 
 
