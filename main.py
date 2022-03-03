@@ -43,7 +43,7 @@ def main():
     last_detections = []
     # detection_model = detectorizer_without_tflite.setup_and_load_model()
 
-    detection_model = Interpreter("detect_from_visio_dog.tflite")
+    detection_model = Interpreter("detectv3.tflite")
     detection_model.allocate_tensors()
     # _, input_height, input_width, _ = detection_model.get_input_details()[0]['shape']
 

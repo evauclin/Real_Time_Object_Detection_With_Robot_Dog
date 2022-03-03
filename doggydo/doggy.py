@@ -67,7 +67,7 @@ class PiCamera(object):
         stream.truncate()
         if self.is_valid_image_4_bytes(jpg):
             img = Image.open(io.BytesIO(jpg)).resize((320, 320))
-            frame = np.array(img).astype(np.float32)/255
+            frame = np.array(img).astype(np.float32)
             return True, frame
         return False, None
 
