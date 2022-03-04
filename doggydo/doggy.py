@@ -78,6 +78,7 @@ DOGGY_IDLE_POSITION = [[0, 99, 10], [0, 99, 10], [0, 99, -10], [0, 99, -10]]
 class DoggyAnimator(object):
     def __init__(self):
         self.controller = Action()
+        time.sleep(2)
 
     @property
     def position(self):
@@ -107,7 +108,6 @@ class Doggy(object):
         print("Starting...")
         self.video = CV2Camera() if not self.is_raspberrypi else PiCamera()
         self.animator = DoggyAnimator()
-        time.sleep(2)
         return self.video.is_opened()
 
     def ready(self):
@@ -120,10 +120,10 @@ class Doggy(object):
         if not self.ready():
             return False
 
-        print(f"Doggy will do: {order}")
         self._ready = False
 
         if not self.is_raspberrypi:
+            print("NO DOGGY ON PC")
             time.sleep(3)
         elif order == DoggyOrder.STAND:
             print("STAND")

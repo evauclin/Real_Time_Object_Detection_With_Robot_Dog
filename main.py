@@ -24,8 +24,8 @@ def get_order_given(last_detections: List[DoggyOrder]) -> DoggyOrder:
     return DoggyOrder.NONE
 
 
-def get_new_detection_tflite(interpreter,frame,threshold):
-    order = detectorizer_for_tflite.detect_objects(interpreter,frame,0.7)
+def get_new_detection_tflite(interpreter, frame, threshold):
+    order = detectorizer_for_tflite.detect_objects(interpreter, frame, threshold)
     if order is not None:
         if order == 0:
             return DoggyOrder.LIE
