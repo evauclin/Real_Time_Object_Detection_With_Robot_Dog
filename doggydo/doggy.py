@@ -6,6 +6,7 @@ from PIL import Image
 
 import numpy as np
 import time
+from typing import List
 
 from .controller.Action import Action
 
@@ -72,6 +73,21 @@ class PiCamera(object):
         return False, None
 
 
+DOGGY_IDLE_POSITION = [[0, 99, 10], [0, 99, 10], [0, 99, -10], [0, 99, -10]]
+
+class DoggyAnimator(object):
+    def __init__(self):
+        self.controller = Action()
+        time.sleep(2)
+
+    @property
+    def position(self):
+        return self.controller.control.point
+
+    def interpolate_to(position: List[List[float]], steps: int, pause: float):
+        pass
+
+
 class Doggy(object):
     def __init__(self):
         self._ready: bool = True
@@ -91,8 +107,7 @@ class Doggy(object):
     def start(self) -> bool:
         print("Starting...")
         self.video = CV2Camera() if not self.is_raspberrypi else PiCamera()
-        self.controller = Action()
-        time.sleep(2)
+        self.animator = DoggyAnimator()
         return self.video.is_opened()
 
     def ready(self):
@@ -105,17 +120,20 @@ class Doggy(object):
         if not self.ready():
             return False
 
-        print(f"Doggy will do: {order}")
         self._ready = False
 
         if not self.is_raspberrypi:
+            print("NO DOGGY ON PC")
             time.sleep(3)
         elif order == DoggyOrder.STAND:
             print("STAND")
+            self.animator.interpolate_to(position=[], steps=30, pause=0.02)
         elif order == DoggyOrder.SIT:
             print("SIT")
+            self.animator.interpolate_to(position=[], steps=30, pause=0.02)
         elif order == DoggyOrder.LIE:
             print("LIE")
+            self.animator.interpolate_to(position=[], steps=30, pause=0.02)
         elif order == DoggyOrder.NONE:
             print("NONE")
         else:
