@@ -9,6 +9,7 @@ import time
 from typing import List
 
 from .controller.Action import Action
+from .controller.Led import Led
 
 
 class DoggyOrder(IntEnum):
@@ -73,9 +74,10 @@ class PiCamera(object):
         return False, None
 
 
-DOGGY_IDLE_POSITION = [[0, 99, 10], [0, 99, 10], [0, 99, -10], [0, 99, -10]]
+DOGGY_IDLE_POSITION = [[55,78,0],[55,78,0],[55,78,0],[55,78,0]]
 DOGGY_SIT_POSITION = [[-20,120,-20],[50,105,0],[50,105,0],[-20,120,20]]
-DOGGY_STAND_POSITION = None
+DOGGY_STAND_POSITION = [[0, 99, 10], [0, 99, 10], [0, 99, -10], [0, 99, -10]]
+
 
 class DoggyAnimator(object):
     def __init__(self):
@@ -105,6 +107,8 @@ class Doggy(object):
         self._ready: bool = True
         self.video = None
         self._machine = None
+        self.in_stand = False
+        self.last_order = DoggyOrder.LIE
 
     @property
     def machine(self):
@@ -120,6 +124,7 @@ class Doggy(object):
         print("Starting...")
         self.video = CV2Camera() if not self.is_raspberrypi else PiCamera()
         self.animator = DoggyAnimator()
+        self.led = Led()
         return self.video.is_opened()
 
     def ready(self):
@@ -134,22 +139,31 @@ class Doggy(object):
 
         self._ready = False
 
+        # if order != DoggyOrder.NONE and order != self.last_order and self.in_stand:
+        #     self.animator.controller.lay2(enter=False)
+        #     self.in_stand = False
+
         if not self.is_raspberrypi:
             print("NO DOGGY ON PC")
             time.sleep(3)
-        elif order == DoggyOrder.STAND:
-            print("STAND")
-            self.animator.interpolate_to(xyz=[], steps=30, pause=0.02)
-        elif order == DoggyOrder.SIT:
-            print("SIT")
-            self.animator.interpolate_to(xyz=[], steps=30, pause=0.02)
-        elif order == DoggyOrder.LIE:
-            print("LIE")
-            self.animator.interpolate_to(xyz=[], steps=30, pause=0.02)
-        elif order == DoggyOrder.NONE:
-            print("NONE")
-        else:
-            raise RuntimeError(f"Unknown order: {order}")
+        elif self.last_order != order:
+            if order == DoggyOrder.STAND:
+                print("STAND")
+                # self.animator.controller.lay2(enter=True)
+                # self.in_stand = True
+                self.led.wheel(127)
+            elif order == DoggyOrder.SIT:
+                print("SIT")
+                self.animator.interpolate_to(xyz=DOGGY_SIT_POSITION, steps=30, pause=0.02)
+            elif order == DoggyOrder.LIE:
+                print("LIE")
+                self.animator.interpolate_to(xyz=DOGGY_IDLE_POSITION, steps=30, pause=0.02)
+            elif order == DoggyOrder.NONE:
+                print("NONE")
+            else:
+                raise RuntimeError(f"Unknown order: {order}")
+
+        self.last_order = order
 
         self._ready = True
         return True

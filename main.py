@@ -63,7 +63,7 @@ def main():
             if frame is not None:
                 new_detection = get_new_detection_tflite(detection_model, frame, 0.7)
                 last_detections.append(new_detection)
-                last_detections = clamp_detections(last_detections, limit=5)
+                last_detections = clamp_detections(last_detections, limit=2)
                 current_order = get_order_given(last_detections)
                 print(new_detection)
 
