@@ -74,6 +74,8 @@ class PiCamera(object):
 
 
 DOGGY_IDLE_POSITION = [[0, 99, 10], [0, 99, 10], [0, 99, -10], [0, 99, -10]]
+DOGGY_SIT_POSITION = [[-20,120,-20],[50,105,0],[50,105,0],[-20,120,20]]
+DOGGY_STAND_POSITION = None
 
 class DoggyAnimator(object):
     def __init__(self):
@@ -84,8 +86,18 @@ class DoggyAnimator(object):
     def position(self):
         return self.controller.control.point
 
-    def interpolate_to(position: List[List[float]], steps: int, pause: float):
-        pass
+    def interpolate_to(self, xyz: List[List[float]], steps: int, pause: float):
+        for i in range(4):
+            xyz[i][0]=(xyz[i][0]-self.controller.control.point[i][0])/steps
+            xyz[i][1]=(xyz[i][1]-self.controller.control.point[i][1])/steps
+            xyz[i][2]=(xyz[i][2]-self.controller.control.point[i][2])/steps
+        for j in range(steps):
+            for i in range(4):
+                self.controller.control.point[i][0]+=xyz[i][0]
+                self.controller.control.point[i][1]+=xyz[i][1]
+                self.controller.control.point[i][2]+=xyz[i][2]
+            self.controller.control.run()
+            time.sleep(pause)
 
 
 class Doggy(object):
@@ -127,13 +139,13 @@ class Doggy(object):
             time.sleep(3)
         elif order == DoggyOrder.STAND:
             print("STAND")
-            self.animator.interpolate_to(position=[], steps=30, pause=0.02)
+            self.animator.interpolate_to(xyz=[], steps=30, pause=0.02)
         elif order == DoggyOrder.SIT:
             print("SIT")
-            self.animator.interpolate_to(position=[], steps=30, pause=0.02)
+            self.animator.interpolate_to(xyz=[], steps=30, pause=0.02)
         elif order == DoggyOrder.LIE:
             print("LIE")
-            self.animator.interpolate_to(position=[], steps=30, pause=0.02)
+            self.animator.interpolate_to(xyz=[], steps=30, pause=0.02)
         elif order == DoggyOrder.NONE:
             print("NONE")
         else:
