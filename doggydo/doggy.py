@@ -115,9 +115,7 @@ class Doggy(object):
         elif order == DoggyOrder.SIT:
             print("SIT")
         elif order == DoggyOrder.LIE:
-            self.controller.lay_in()
-            time.sleep(2)
-            self.controller.lay_out()
+            print("LIE")
         elif order == DoggyOrder.NONE:
             print("NONE")
         else:

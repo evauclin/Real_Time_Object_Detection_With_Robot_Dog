@@ -4,21 +4,6 @@ import time
 from tflite_runtime.interpreter import Interpreter
 import numpy as np
 
-CAMERA_WIDTH = 640
-CAMERA_HEIGHT = 480
-
-def load_labels(path='labels.txt'):
-  """Loads the labels file. Supports files with or without index numbers."""
-  with open(path, 'r', encoding='utf-8') as f:
-    lines = f.readlines()
-    labels = {}
-    for row_number, content in enumerate(lines):
-      pair = re.split(r'[:\s]+', content.strip(), maxsplit=1)
-      if len(pair) == 2 and pair[0].strip().isdigit():
-        labels[int(pair[0])] = pair[1].strip()
-      else:
-        labels[row_number] = pair[0].strip()
-  return labels
 
 def set_input_tensor(interpreter, image):
   """Sets the input tensor."""
@@ -51,7 +36,7 @@ def detect_objects(interpreter, image, threshold) -> Optional[int]:
 
     detections = np.array(detections)
 
-    if not detections:
+    if detections.size == 0:
         return None
 
     unique_labels, counts = np.unique(detections, return_counts=True)
