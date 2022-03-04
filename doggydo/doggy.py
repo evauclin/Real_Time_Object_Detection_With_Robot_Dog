@@ -10,6 +10,7 @@ from typing import List
 
 from .controller.Action import Action
 from .controller.Led import Led
+from .controller.Buzzer import Buzzer
 
 
 class DoggyOrder(IntEnum):
@@ -124,7 +125,8 @@ class Doggy(object):
         print("Starting...")
         self.video = CV2Camera() if not self.is_raspberrypi else PiCamera()
         self.animator = DoggyAnimator()
-        self.led = Led()
+        # self.led = Led()
+        self.buzzer = Buzzer()
         return self.video.is_opened()
 
     def ready(self):
@@ -151,19 +153,30 @@ class Doggy(object):
                 print("STAND")
                 # self.animator.controller.lay2(enter=True)
                 # self.in_stand = True
-                self.led.wheel(127)
+                self.buzzer.run('1')
+                time.sleep(0.2)
+                self.buzzer.run('0')
+                time.sleep(0.1)
+                self.buzzer.run('1')
+                time.sleep(0.2)
+                self.buzzer.run('0')
+                time.sleep(0.4)
+                self.buzzer.run('1')
+                time.sleep(0.3)
+                self.buzzer.run('0')
             elif order == DoggyOrder.SIT:
                 print("SIT")
                 self.animator.interpolate_to(xyz=DOGGY_SIT_POSITION, steps=30, pause=0.02)
+                self.last_order = order
             elif order == DoggyOrder.LIE:
                 print("LIE")
                 self.animator.interpolate_to(xyz=DOGGY_IDLE_POSITION, steps=30, pause=0.02)
+                self.last_order = order
             elif order == DoggyOrder.NONE:
                 print("NONE")
+                self.last_order = order
             else:
                 raise RuntimeError(f"Unknown order: {order}")
-
-        self.last_order = order
 
         self._ready = True
         return True
